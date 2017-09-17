@@ -5,13 +5,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class Calculator extends AppCompatActivity {
 
     // 1. 사용할 위젯을 선언
-    Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btn_plus, btn_minus, btn_multiply, btn_divide, btn_result, btn_re;
+    Button btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn0, btn_plus, btn_minus, btn_multiply, btn_divide, btn_result, btn_re, btn_left, btn_right, btn_dot;
     TextView textPreview, textResult;
 
     @Override
@@ -41,6 +42,9 @@ public class Calculator extends AppCompatActivity {
         btn_divide = (Button) findViewById(R.id.btn_divide);
         btn_result = (Button) findViewById(R.id.btn_result);
         btn_re = (Button) findViewById(R.id.btn_re);
+        btn_left = (Button) findViewById(R.id.btn_left);
+        btn_right = (Button) findViewById(R.id.btn_right);
+        btn_dot = (Button) findViewById(R.id.btn_dot);
         textPreview = (TextView) findViewById(R.id.textPreview);
         textResult = (TextView) findViewById(R.id.textResult);
     }
@@ -62,6 +66,9 @@ public class Calculator extends AppCompatActivity {
         btn_divide.setOnClickListener(onClickListener);
         btn_re.setOnClickListener(onClickListener);
         btn_result.setOnClickListener(onClickListener);
+        btn_left.setOnClickListener(onClickListener);
+        btn_right.setOnClickListener(onClickListener);
+        btn_dot.setOnClickListener(onClickListener);
         textPreview.setOnClickListener(onClickListener);
         textResult.setOnClickListener(onClickListener);
     }
@@ -74,56 +81,64 @@ public class Calculator extends AppCompatActivity {
 
             switch (v.getId()) {
                 case R.id.btn1:
-                    setPreview("1"); //함수를 직접 사용하는 경우는 별로 없다.
+                    append("1"); //함수를 직접 사용하는 경우는 별로 없다.
+
                     break;
                 case R.id.btn2:
-                    setPreview("2");
+                    append("2");
                     break;
                 case R.id.btn3:
-                    setPreview("3");
+                    append("3");
                     break;
                 case R.id.btn4:
-                    setPreview("4");
+                    append("4");
                     break;
                 case R.id.btn5:
-                    setPreview("5");
+                    append("5");
                     break;
                 case R.id.btn6:
-                    setPreview("6");
+                    append("6");
                     break;
                 case R.id.btn7:
-                    setPreview("7");
+                    append("7");
                     break;
                 case R.id.btn8:
-                    setPreview("8");
+                    append("8");
                     break;
                 case R.id.btn9:
-                    setPreview("9");
+                    append("9");
                     break;
                 case R.id.btn0:
-                    setPreview("0");
+                    append("0");
                     break;
                 case R.id.btn_plus:
-                    textPreview.setText("+");
-
+                    append("+");
                     break;
                 case R.id.btn_minus:
-                    textPreview.setText("-");
-
-
+                    append("-");
                     break;
                 case R.id.btn_multiply:
-                    textPreview.setText("*");
+                    append("*");
+                    break;
+                case R.id.btn_left:
+                    append("(");
+                    break;
+                case R.id.btn_right:
+                    append(")");
+                    break;
+                case R.id.btn_dot:
+                    append(".");
                     break;
                 case R.id.btn_divide:
-                    textPreview.setText("/");
+                    append("/");
                     break;
+
                 case R.id.btn_re:
-                    textPreview.setText("0");
-                    textResult.setText("0");
+                    textPreview.setText("");
+                    textResult.setText("");
                     break;
                 case R.id.btn_result:
-                    double result = calc();
+                    double result = calc1();
                     textPreview.setText("" + result);
                     break;
 
@@ -132,24 +147,70 @@ public class Calculator extends AppCompatActivity {
 
         }
 
-//        private double calc1() {
-//
-//            //13 +15*3-5/13
-//            //1. 우선순위 없을 경우
-//            //가. 입력받을 때 단위별로 공백을 추가해서 받는다.
-//            String target = "34+15*-5/3";
-//            ArrayList<String> subTarget = new ArrayList<>();
-//            //나 공백을 기준으로 spilit하면 연산자와 숫자가 구분된다.
-//            String calculTarget[] = target.split(" ");
-//            double front, back, subResult, result;
-//
-//            for (int i = 0; i < calculTarget.length; i++) {
-//                if (calculTarget[i].equals("*") || calculTarget.equals("/")) {
-//                    front = Double.parseDouble(subTarget.get(subTarget.size() - 1));
-//                    back = Double.parseDouble(calculTarget[i + 1]);
-//                }
-//            }
-//        }
+        private double calc1() {
+
+            String target = textPreview.getText().toString(); // 계산창의 스트링값들을 가지고 와서, 스트링형태로 바꿔줌
+            ArrayList<String> subTarget = new ArrayList<>(); // 어레이리스트에 저장
+
+
+            String calculTarget[] = target.split("(?<=[*/+-])|(?=[*/+-])"); //계산창의 연산자들을 쪼개준 것을 calculTarget에 저장한다.
+
+            double front, back, subResult, result;
+
+            for (int i = 0; i < calculTarget.length; i++) { // 배열에는 length를 쓴다. // 계산창의 배열의 길이만큼 포문을 돈다.
+                if (calculTarget[i].equals("*") || calculTarget[i].equals("/")) { // 배열의 인덱스 중 *,/ 연산자를 만나면
+                    front = Double.parseDouble(subTarget.get(subTarget.size() - 1)/*calculTarget[i - 1]*/); // 앞에있는 스트링값(숫자문자)를 더블타입으로 변환해 주고,
+                    back = Double.parseDouble(calculTarget[i + 1]);
+                    if (calculTarget[i].equals("*")) { //만약 배열의 문자 중 *를 만나면
+                        subResult = front * back; // subResult 변수에 double로 형변환된 front와 back을 곱한다.
+                    } else {
+                        subResult = front / back;// subResult 변수에 double로 형변환된 front와 back을 나눈다.
+                    }
+
+                    subTarget.remove(subTarget.size() - 1);// 이 결과로 subTarget.size() 마지막것을 지운다.
+                    subTarget.add(subResult + ""); // 마지막것을 지우고, 결과를 리스트 저장 이유는 어
+
+
+
+                } else {
+                    subTarget.add(calculTarget[i]);// 만약 연산자를 맞닥드리지 않는다면, 그냥 append된 값들을 배열로 변환
+                }
+            }
+
+            result = Double.parseDouble(subTarget.get(0)); // 첫번째
+
+
+            for (int k = 0; k < subTarget.size() - 1; k++) { // 어레이리스트에는 size()를 쓴다.
+                switch (subTarget.get(k)) {
+                    case "+":
+                        result += Double.parseDouble(subTarget.get(k + 1));
+                        break;
+                    case "-":
+                        result -= Double.parseDouble(subTarget.get(k + 1));
+                }
+            }
+            return result;
+        }
+
+
+        private void append(String str) {
+            if (textPreview.getText().toString().equals("")) {
+                if (str.equals("+") || str.equals("-") || str.equals("*") || str.equals("/")) {
+                    Toast.makeText(Calculator.this, "연산자를 먼저 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    textPreview.setText("");
+                }
+
+            }
+            textPreview.append(str);
+        }
+    };
+
+
+}
+
+
 //
 //        private double calc2(){
 //            //저장소를 두개로 분리해서 선언
@@ -164,32 +225,16 @@ public class Calculator extends AppCompatActivity {
 //            //
 //        }
 
-        private void calc3(){
-            String inputText ="34+15*3-5/10";
-            String splitedText[] = inputText.split("(?<=[*/+-])|(?=[*/+-])");//정규식을 쓰면됨.
-            String temp[] = {"34", "+","15","*","3", "-","5","-","10"};
-            ArrayList<String> result = new ArrayList<>();
-            for(String item : temp){
-                if(item.equals("*") | item.equals("/")){
-                    //결과값을 result에 add한다.
-                }
-            }
-
-            for(String item : result){}
-        }
-
-        private void setPreview(String str) {
-            String temp = textPreview.getText().toString();
-
-            if (temp.equals("0")) {
-                textPreview.setText(str);
-            } else {
-                textPreview.append(str);
-            }
-
-            textPreview.append(str); //기존에 있는값에 더하기 즉, 붙여줄려고
-        }
-    };
-
-
-}
+//        private void calc3(){
+//            String inputText ="34+15*3-5/10";
+//            String splitedText[] = inputText.split("(?<=[*/+-])|(?=[*/+-])");//정규식을 쓰면됨.
+//            String temp[] = {"34", "+","15","*","3", "-","5","-","10"};
+//            ArrayList<String> result = new ArrayList<>();
+//            for(String item : temp){
+//                if(item.equals("*") | item.equals("/")){
+//                    //결과값을 result에 add한다.
+//                }
+//            }
+//
+//            for(String item : result){}
+//        }
