@@ -1,4 +1,10 @@
-# 사칙연산 가능한 계산기
+# ADS04 Android
+
+## 수업 내용
+
+- 사칙연산이 가능한 계산기 레이아웃 과 로직을 구현하는 미니 프로젝트
+
+## Code Review
 
 ```Java
 View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -135,6 +141,9 @@ View.OnClickListener onClickListener = new View.OnClickListener() {
   };
 ```
 
+
+## 보충설명
+
 - UI에서 보이는 계산기 숫자를 클릭시 '문자로 구성된 숫자들'은 append라고 명명한 메서드를 통해 출력된다. (연산자를 먼저 입력할 수 없는 에외처리 + 만약 숫자가 먼저 입력되면 그냥 append를 통해 문자형태로 누적?추가?됨.)
 
 - 실질 적인 계산은 btn_result가 클릭되었을 때 실행됨.
@@ -149,4 +158,20 @@ View.OnClickListener onClickListener = new View.OnClickListener() {
 - 우선 배열의 크기만큼 반복문을 돌고, 곱하기, 나누기 부호를 만나면, 'parse타입'으로 연산에 필요한 타입으로 나눠준후, 숫자 연산을 진행한다.
 
 - 수정필요!
+
 - __배열과 어레이리스트를 같이 사용할 필요가 있는지 고려가 필요함.__
+
+## TODO
+
+- 괄호와 소수점 추가하기
+
+## Retrospect
+
+- 알고리즘이 굉장히 많이 들어간다고 느꼈던 프로젝트이다.
+
+## Output
+- 생략
+
+
+
+

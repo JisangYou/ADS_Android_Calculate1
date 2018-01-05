@@ -170,8 +170,6 @@ public class Calculator extends AppCompatActivity {
                     subTarget.remove(subTarget.size() - 1);// 이 결과로 subTarget.size() 마지막것을 지운다.
                     subTarget.add(subResult + ""); // 마지막것을 지우고, 결과를 리스트 저장 이유는 어
 
-
-
                 } else {
                     subTarget.add(calculTarget[i]);// 만약 연산자를 맞닥드리지 않는다면, 그냥 append된 값들을 배열로 변환
                 }
