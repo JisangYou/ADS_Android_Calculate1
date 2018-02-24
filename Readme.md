@@ -170,7 +170,7 @@ View.OnClickListener onClickListener = new View.OnClickListener() {
 - 알고리즘이 굉장히 많이 들어간다고 느꼈던 프로젝트이다.
 
 ## Output
-- ![calculate](https://user-images.githubusercontent.com/31605792/36633326-e3a74b90-19d6-11e8-893d-a5bc004d9045.gif)
+![calculate](https://user-images.githubusercontent.com/31605792/36633326-e3a74b90-19d6-11e8-893d-a5bc004d9045.gif)
 
 
 
